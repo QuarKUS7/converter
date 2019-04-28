@@ -1,11 +1,13 @@
 version: "3"
 services:
     api:
-      build: .
+      build:
+        context: ./api
+        dockerfile: Dockerfile.api
       container_name: api
       volumes:
         - ./:/app
-      command: gunicorn --bind 0.0.0.0:5000 app:app
+      command: gunicorn --bind 0.0.0.0:5000 api.app:app
       ports:
         - "5000:5000"
     nginx:
@@ -16,3 +18,5 @@ services:
         - "80:80"
       volumes:
         - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    redis:
+      image: "redis:alpine"
