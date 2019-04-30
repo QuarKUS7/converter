@@ -1,20 +1,21 @@
+import redis
 from flask import Flask
 from flask_restful import Resource, Api
-import redis
+from convert import Convert
+
 
 app = Flask(__name__)
 api = Api(app)
 
-def get_hit_count():
-        r.incr('hits')
-
 r = redis.Redis(
-    host='redis'
-)
+    host='redis', decode_responses=True
+    )
+
 class Rates(Resource):
     def get(self):
-        get_hit_count()
-        return {'hello': int(r.get('hits'))}
+        Convert.get_hit_count(r)
+        cnvrt = Convert()
+        return {'hello': 'data'}
 
 api.add_resource(Rates, '/')
 

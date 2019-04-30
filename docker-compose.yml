@@ -6,8 +6,8 @@ services:
         dockerfile: Dockerfile.api
       container_name: api
       volumes:
-        - ./:/app
-      command: gunicorn --bind 0.0.0.0:5000 api.app:app
+        - ./api:/app
+      command: gunicorn --bind 0.0.0.0:5000 app:api.app
       ports:
         - "5000:5000"
     nginx:
