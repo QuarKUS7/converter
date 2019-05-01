@@ -1,10 +1,12 @@
 import requests
 import datetime
-
+import redis
 
 class Convert():
 
     _CNB_URL = "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt"
+
+    r = redis.Redis(host='redis', decode_responses=True)
 
     def __init__(self, from_curren, amount, to_curren=None):
         self.from_curren = self._get_rate(from_curren)
@@ -31,18 +33,18 @@ class Convert():
 
     def _get_rate(self, currency):
         if currency:
-            rate = r.hget('rates', currency)
+            rate = self.r.hget('rates', currency)
             if rate:
                 return {currency:rate}
             else:
                 self._update_rates()
-                return {currency: r.hget('rates', currency)}
-        rates = r.hgetall('rates')
+                return {currency: self.r.hget('rates', currency)}
+        rates = self.r.hgetall('rates')
         if rates:
             return rates
         else:
             self._update_rates()
-            return r.hgetall('rates')
+            return self.r.hgetall('rates')
 
     def _update_rates(self):
         print('updated')
@@ -59,13 +61,14 @@ class Convert():
         return rates_dict
     
     def _insert_into_redis(self,to_insert):
-        r.hmset('rates', to_insert)
-        r.expire('rates', datetime.timedelta(minutes=1))
+        self.r.hmset('rates', to_insert)
+        self.r.expire('rates', datetime.timedelta(minutes=1))
+
 
 if __name__ == '__main__':
     import redis
     r = redis.Redis(host='127.0.0.1',port='6379', decode_responses=True)
-    cnvrt = Convert('RUB', 11.1, 'USD')
+    cnvrt = Convert(r, 'RUB', 11.1)
     #print(cnvrt.from_curren)
     #print(cnvrt.to_curren)
     print(cnvrt.convert())

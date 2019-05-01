@@ -1,3 +1,11 @@
 __pycache__/
 .vscode/
 Pipfile
+
+   def get():
+        input_cur = request.args.get('input_currency')
+        output_cur = request.args.get('output_currency', default=None)
+        amount = request.args.get('amount', default=None)
+        cnvrt = Convert('RUB', 11.1)
+        cnvrt = Convert()
+        return {'hello': 'data'}
