@@ -18,6 +18,7 @@ def handle_error(err):
     else:
         return jsonify({"errors": messages}), err.code
 
+
 class Rates(Resource):
 
     @use_kwargs({'input_currency': fields.Str(required=True), 'amount': fields.Float(required=True), 'output_currency': fields.Str(required=False, missing=None)})
