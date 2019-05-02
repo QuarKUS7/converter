@@ -8,7 +8,7 @@ class Convert():
 
     r = redis.Redis(host='redis', decode_responses=True)
 
-    def __init__(self, from_curren, amount, to_curren=None):
+    def __init__(self, from_curren, amount, to_curren):
         self.from_curren = self._get_rate(from_curren)
         self.amount = amount
         self.to_curren = self._get_rate(to_curren)
@@ -57,6 +57,7 @@ class Convert():
         rates_dict = {}
         for row in text.split('\n')[2:-1]:
             rates_dict[row.split('|')[-2]] = row.split('|')[-1].replace(',','.')
+            #print(rates_dict)
         return rates_dict
     
     def _insert_into_redis(self,to_insert):
@@ -68,4 +69,6 @@ if __name__ == '__main__':
     import redis
     r = redis.Redis(host='127.0.0.1',port='6379', decode_responses=True)
     cnvrt = Convert(r, 'RUB', 11.1)
+    #print(cnvrt.from_curren)
+    #print(cnvrt.to_curren)
     print(cnvrt.convert())
