@@ -13,10 +13,7 @@ api = Api(app)
 def handle_error(err):
     headers = err.data.get("headers", None)
     messages = err.data.get("messages", ["Invalid request."])
-    if headers:
-        return jsonify({"Error": messages}), err.code
-    else:
-        return jsonify({"Error": messages}), err.code
+    return jsonify({"Error": messages}), err.code
 
 
 class Rates(Resource):
