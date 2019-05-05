@@ -11,7 +11,6 @@ api = Api(app)
 @app.errorhandler(422)
 @app.errorhandler(400)
 def handle_error(err):
-    headers = err.data.get("headers", None)
     messages = err.data.get("messages", ["Invalid request."])
     return jsonify({"Error": messages}), err.code
 
