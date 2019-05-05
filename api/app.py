@@ -14,14 +14,13 @@ def handle_error(err):
     headers = err.data.get("headers", None)
     messages = err.data.get("messages", ["Invalid request."])
     if headers:
-        return jsonify({"errors": messages}), err.code, headers
+        return jsonify({"Error": messages}), err.code
     else:
-        return jsonify({"errors": messages}), err.code
+        return jsonify({"Error": messages}), err.code
 
 
 class Rates(Resource):
-
-    @use_kwargs({'input_currency': fields.Str(required=True), 'amount': fields.Float(required=True), 'output_currency': fields.Str(required=False, missing='All')})
+    @use_kwargs({'input_currency': fields.Str(required=True), 'amount': fields.Float(required=True, validate=lambda val: val > 0), 'output_currency': fields.Str(required=False, missing='All')})
     def get(self, **kwargs):
         cnvrt = Convert(kwargs['input_currency'], kwargs['amount'], kwargs['output_currency'])
         return cnvrt.convert()

@@ -28,10 +28,10 @@ class Convert():
             
     def convert(self):
         if not self.from_curren:
-            return {'Error': 'Currency not found'}
+            return {"Error":{"input_currency":["Unknown input currency or symbol."]}}, 400
         self.from_curren = self._get_rate(self.from_curren)
         if not self.to_curren:
-            return {'Errror': 'Unknown to currency'}
+            return {"Error":{"output_currency":["Unknown output currency or symbol."]}}, 400
         self.to_curren = self._get_rate(self.to_curren)
         out = {"input": {"amount": self.amount, "currency": next(iter(self.from_curren.keys()))}, "output": {}}
         for key, value in self.to_curren.items():
@@ -75,7 +75,7 @@ class Convert():
         rates_dict = {}
         for row in text.split('\n')[2:-1]:
             rates_dict[row.split('|')[-2]] = row.split('|')[-1].replace(',','.')
-            #print(rates_dict)
+        rates_dict['CZK'] = '1'
         return rates_dict
     
     def _insert_into_redis(self,to_insert):
