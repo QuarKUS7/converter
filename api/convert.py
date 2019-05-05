@@ -1,6 +1,8 @@
 import requests
 import datetime
 import redis
+import json
+
 
 class Convert():
 
@@ -9,11 +11,28 @@ class Convert():
     r = redis.Redis(host='redis', decode_responses=True)
 
     def __init__(self, from_curren, amount, to_curren):
-        self.from_curren = self._get_rate(from_curren)
+        self._symbol_list = self._load_symbols()
+        self.from_curren = self._check_currency_symbol(from_curren)
         self.amount = amount
-        self.to_curren = self._get_rate(to_curren)
+        self.to_curren = self._check_currency_symbol(to_curren)
 
+    def _load_symbols(self):
+        with open('symbols.json', 'r', encoding='utf-8') as f:
+            symbol_list = json.load(f)
+        return list(symbol_list.values())
+
+    def _check_currency_symbol(self, curren):
+        if curren == 'All':
+            return 'All'
+        return next((item['code'] for item in self._symbol_list if curren.upper() in [item['symbol'], item['code']]), None)
+            
     def convert(self):
+        if not self.from_curren:
+            return {'Error': 'Currency not found'}
+        self.from_curren = self._get_rate(self.from_curren)
+        if not self.to_currency:
+            return {'Errror': 'Unknown to currency'}
+        self.to_curren = self._get_rate(self.to_curren)
         out = {"input": {"amount": self.amount, "currency": next(iter(self.from_curren.keys()))}, "output": {}}
         for key, value in self.to_curren.items():
             out["output"][key] = self._change(float(value))
@@ -32,26 +51,25 @@ class Convert():
             return response.text
 
     def _get_rate(self, currency):
-        if currency:
-            rate = self.r.hget('rates', currency)
-            if rate:
-                return {currency:rate}
+        if currency == 'All':
+            rates = self.r.hgetall('rates')
+            if rates:
+                return rates
             else:
                 self._update_rates()
-                return {currency: self.r.hget('rates', currency)}
-        rates = self.r.hgetall('rates')
-        if rates:
-            return rates
+                return self.r.hgetall('rates')
+        rate = self.r.hget('rates', currency)
+        if rate:
+            return {currency:rate}
         else:
             self._update_rates()
-            return self.r.hgetall('rates')
+            return {currency: self.r.hget('rates', currency)}
 
     def _update_rates(self):
         print('updated')
         resp = self._request()
         rates_dict = self._parse_cnb(resp)
         self._insert_into_redis(rates_dict)
-
 
     def _parse_cnb(self, text):
         rates_dict = {}
@@ -68,7 +86,5 @@ class Convert():
 if __name__ == '__main__':
     import redis
     r = redis.Redis(host='127.0.0.1',port='6379', decode_responses=True)
-    cnvrt = Convert(r, 'RUB', 11.1)
-    #print(cnvrt.from_curren)
-    #print(cnvrt.to_curren)
+    cnvrt = Convert('MXN', 11.1, 'All')
     print(cnvrt.convert())

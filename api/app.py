@@ -21,7 +21,7 @@ def handle_error(err):
 
 class Rates(Resource):
 
-    @use_kwargs({'input_currency': fields.Str(required=True), 'amount': fields.Float(required=True), 'output_currency': fields.Str(required=False, missing=None)})
+    @use_kwargs({'input_currency': fields.Str(required=True), 'amount': fields.Float(required=True), 'output_currency': fields.Str(required=False, missing='All')})
     def get(self, **kwargs):
         cnvrt = Convert(kwargs['input_currency'], kwargs['amount'], kwargs['output_currency'])
         return cnvrt.convert()
