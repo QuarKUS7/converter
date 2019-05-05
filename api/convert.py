@@ -30,7 +30,7 @@ class Convert():
         if not self.from_curren:
             return {'Error': 'Currency not found'}
         self.from_curren = self._get_rate(self.from_curren)
-        if not self.to_currency:
+        if not self.to_curren:
             return {'Errror': 'Unknown to currency'}
         self.to_curren = self._get_rate(self.to_curren)
         out = {"input": {"amount": self.amount, "currency": next(iter(self.from_curren.keys()))}, "output": {}}
