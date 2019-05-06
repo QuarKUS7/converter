@@ -16,12 +16,21 @@ def handle_error(err):
 
 
 class Rates(Resource):
-    @use_kwargs({'input_currency': fields.Str(required=True), 'amount': fields.Float(required=True, validate=lambda val: val > 0), 'output_currency': fields.Str(required=False, missing='All')})
+    @use_kwargs(
+        {
+            "input_currency": fields.Str(required=True),
+            "amount": fields.Float(required=True, validate=lambda val: val > 0),
+            "output_currency": fields.Str(required=False, missing="All"),
+        }
+    )
     def get(self, **kwargs):
-        cnvrt = Convert(kwargs['input_currency'], kwargs['amount'], kwargs['output_currency'])
+        cnvrt = Convert(
+            kwargs["input_currency"], kwargs["amount"], kwargs["output_currency"]
+        )
         return cnvrt.convert()
 
-api.add_resource(Rates, '/currency_converter')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+api.add_resource(Rates, "/currency_converter")
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
