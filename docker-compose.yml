@@ -14,6 +14,8 @@ services:
         - "5000:5000"
     nginx:
       image: "nginx:latest"
+      depends_on:
+        - api
       restart: always
       ports:
         - "80:80"
