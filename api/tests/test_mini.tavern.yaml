@@ -1,0 +1,93 @@
+# Every test file has one or more tests...
+test_name: Get for oone output currency
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure we have the right ID
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/currency_converter?amount=100.9&input_currency=MXN&output_currency=EUR
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"input": {"amount": 100.9, "currency": "MXN"}, "output": {"EUR": 4.732078553373517}}
+
+---
+
+test_name: Get for multi output
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/currency_converter?amount=100.9&input_currency=MXN
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"input": {"amount": 100.9, "currency": "MXN"}, "output": {"AUD": 7.581172512616037, "BRL": 21.041915960574094, "BGN": 9.255754164448163, "CNY": 35.85309369475545, "DKK": 35.332578397212544, "EUR": 4.732078553373517, "PHP": 2.753437118160836, "HKD": 41.58762816131237, "HRK": 35.077947535312774, "INR": 3.6782963545130283, "IDR": 75.72209085252022, "ISK": 6.445201271186441, "ILS": 19.025234521575985, "JPY": 5.873981463603012, "ZAR": 76.91871049304677, "CAD": 7.143677351179994, "KRW": 62.05272819989801, "HUF": 15.304414539051692, "MYR": 21.980744219653182, "MXN": 100.9, "XDR": 3.831645569620253, "NOK": 46.321050628092884, "NZD": 8.01352650642081, "PLN": 20.267388407728184, "RON": 22.505159977806546, "RUB": 3.4534396639800207, "SGD": 7.224686813513032, "SEK": 50.74453711426188, "CHF": 5.396009046162034, "THB": 1.690450655701267, "TRY": 31.904929208180388, "USD": 5.299425137183173, "GBP": 4.044719960113013, "CZK": 121.6854}}
+
+---
+
+test_name: Get error missing amount
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/currency_converter?&input_currency=MXN
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 422
+      body:
+        {"Error":{"amount":["Missing data for required field."]}}
+
+---
+
+test_name: Get error missing input currency
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/currency_converter?amount=100.9&output_currency=EUR
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 422
+      body:
+        {"Error":{"input_currency":["Missing data for required field."]}}
+
+---
+
+test_name: Get unkwnow input currency
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/currency_converter?amount=18&input_currency=HHH
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 400
+      body:
+        {"Error": {"input_currency": ["Unknown input currency or symbol."]}}
