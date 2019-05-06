@@ -66,15 +66,15 @@ class Convert():
             return {currency: self.r.hget('rates', currency)}
 
     def _update_rates(self):
-        print('updated')
         resp = self._request()
         rates_dict = self._parse_cnb(resp)
         self._insert_into_redis(rates_dict)
 
     def _parse_cnb(self, text):
         rates_dict = {}
+        breakpoint()
         for row in text.split('\n')[2:-1]:
-            rates_dict[row.split('|')[-2]] = row.split('|')[-1].replace(',','.')
+            rates_dict[row.split('|')[-2]] = float(row.split('|')[-1].replace(',','.')) / float(row.split('|')[-3].replace(',','.'))
         rates_dict['CZK'] = '1'
         return rates_dict
     

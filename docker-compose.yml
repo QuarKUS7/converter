@@ -5,6 +5,8 @@ services:
         context: ./api
         dockerfile: Dockerfile.api
       container_name: api
+      depends_on:
+        - redis
       volumes:
         - ./api:/app
       command: gunicorn --bind 0.0.0.0:5000 app:api.app
@@ -12,8 +14,7 @@ services:
         - "5000:5000"
     nginx:
       image: "nginx:latest"
-      depends_on:
-        - api
+      restart: always
       ports:
         - "80:80"
       volumes:
