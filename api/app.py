@@ -15,7 +15,7 @@ def handle_error(err):
     return jsonify({"Error": messages}), err.code
 
 
-class Rates(Resource):
+class Conversion(Resource):
     @use_kwargs(
         {
             "input_currency": fields.Str(required=True),
@@ -30,7 +30,7 @@ class Rates(Resource):
         return cnvrt.convert()
 
 
-api.add_resource(Rates, "/currency_converter")
+api.add_resource(Conversion, "/currency_converter")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
