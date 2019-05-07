@@ -98,6 +98,7 @@ class Convert:
         self._insert_into_redis(rates_dict)
 
     def _parse_cnb(self, text):
+        print("parsed")
         """Returns dict of currency and rate from CNB rates"""
         rates_dict = {}
         for row in text.split("\n")[2:-1]:
@@ -110,7 +111,14 @@ class Convert:
 
     def _insert_into_redis(self, to_insert):
         self.r.hmset("rates", to_insert)
-        self.r.expire("rates", datetime.timedelta(minutes=1))
+        # expire at is set for 14:35 next day, after this the rates are updated
+        self.r.expireat(
+            "rates",
+            datetime.datetime.combine(
+                datetime.date.today() + datetime.timedelta(days=1),
+                datetime.time(14, 35),
+            ),
+        )
 
 
 if __name__ == "__main__":
