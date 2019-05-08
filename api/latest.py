@@ -7,16 +7,12 @@ class Latest(Base):
         self.custom_list = rates
 
     def fetch_rates(self):
-        if not self.custom_list and not self.base:
-            return self._get_or_update()
-        elif self.custom_list and not self.base:
-            rates = self._get_or_update()
-            return {key:value for (key, value) in rates.items() if key in self.custom_list}
-        elif not self.custom_list and self.base:
-            return self._rebase(self._get_or_update())
-        elif self.custom_list and self.base:
-            rates = self._get_or_update()
-            return self._rebase({key:value for (key, value) in rates.items() if key in self.custom_list}, self.base)
+        rates = self._get_or_update()
+        if self.custom_list:
+            rates = {key:value for (key, value) in rates.items() if key in self.custom_list}
+        if self.base:
+            return self._rebase(rates)
+        return rates
 
     def _rebase(self, dict_rates):
         base_rate = dict_rates[self.base]
