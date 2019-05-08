@@ -1,6 +1,8 @@
+from convert import Base
 
-class Latest:
-    def __init__(self):
+class Latest(Base):
+    def __init__(self, base, rate):
+        super().__init__()
         self.base = base
         self.custom_list = rates
 
