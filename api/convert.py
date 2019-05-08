@@ -16,7 +16,22 @@ class Base:
         # Load symbol list
         with open("symbols.json", "r", encoding="utf-8") as f:
             symbol_list = json.load(f)
-        return list(symbol_list.values())
+        return list(symbol_list.values())   
+
+    def _check_currency_symbol(self, curren):
+        """Check if symbol in symbol list. Returns code of the currency"""
+        if curren == "All":
+            return "All"
+        if not curren:
+            return None
+        return next(
+            (
+                item["code"]
+                for item in self._symbol_list
+                if curren.upper() in [item["symbol"], item["code"]]
+            ),
+            None,
+        )
 
     def _update_rates(self):
         """Parse and insert new rates to db"""
@@ -53,6 +68,14 @@ class Base:
         if response.content:
             return response.text
 
+    def _get_or_update(self):
+        rates = self.r.hgetall("rates")
+        if rates:
+            return rates
+        else:
+            self._update_rates()
+            return self.r.hgetall("rates")
+                
 
 class Convert(Base):
 
@@ -61,19 +84,6 @@ class Convert(Base):
         self.from_curren = self._check_currency_symbol(from_curren)
         self.amount = amount
         self.to_curren = self._check_currency_symbol(to_curren)
-
-    def _check_currency_symbol(self, curren):
-        """Check if symbol in symbol list. Returns code of the currency"""
-        if curren == "All":
-            return "All"
-        return next(
-            (
-                item["code"]
-                for item in self._symbol_list
-                if curren.upper() in [item["symbol"], item["code"]]
-            ),
-            None,
-        )
 
     def convert(self):
         """Function for tringering conversion on initialized Convert object"""
@@ -112,12 +122,7 @@ class Convert(Base):
         """Return rates from db or trigers update for rates"""
         # All is for missing output currency
         if currency == "All":
-            rates = self.r.hgetall("rates")
-            if rates:
-                return rates
-            else:
-                self._update_rates()
-                return self.r.hgetall("rates")
+            return self._get_or_update()
         rate = self.r.hget("rates", currency)
         if rate:
             return {currency: rate}

@@ -31,11 +31,11 @@ class Conversion(Resource):
         )
         return cnvrt.convert()
 
-class Latest(Resource):
+class Lat(Resource):
     @use_kwargs(
         {
             "base": fields.Str(required=False, missing=None),
-            "rates": fields.Str(required=False, missing=None),
+            "rates": fields.DelimitedList(fields.Str(), required=False, missing=None),
         }
     )
     def get(self, **kwargs):
@@ -46,7 +46,7 @@ class Latest(Resource):
 
 
 api.add_resource(Conversion, "/currency_converter")
-api.add_resource(Latest, "/latest")
+api.add_resource(Lat, "/latest")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
