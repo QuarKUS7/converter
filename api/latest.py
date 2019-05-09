@@ -12,7 +12,7 @@ class Latest(Base):
                 {"Error": {"base": ["Unknown base currency or symbol."]}},
                 400,
             )
-        if None in self.custom_list:s
+        if None in self.custom_list:
             return (
                 {"Error": {"rates": ["Unknown rate currency or symbol."]}},
                 400,
