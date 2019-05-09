@@ -16,4 +16,4 @@ class Latest(Base):
 
     def _rebase(self, dict_rates):
         base_rate = dict_rates[self.base]
-        return dict((k, float(v)/float(base_rate)) for k, v in dict_rates.items())
+        return {key:float(value)/float(base_rate) for key, value in dict_rates.items()}
