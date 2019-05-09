@@ -75,6 +75,18 @@ class Base:
         else:
             self._update_rates()
             return self.r.hgetall("rates")
+
+    def _get_rate(self, currency):
+        """Return rates from db or trigers update for rates"""
+        # All is for missing option
+        if currency == "All":
+            return self._get_or_update()
+        rate = self.r.hget("rates", currency)
+        if rate:
+            return {currency: rate}
+        else:
+            self._update_rates()
+            return {currency: self.r.hget("rates", currency)}
                 
 
 class Convert(Base):
@@ -117,15 +129,3 @@ class Convert(Base):
             * float(self.amount)
             / float(currency)
         )
-
-    def _get_rate(self, currency):
-        """Return rates from db or trigers update for rates"""
-        # All is for missing output currency
-        if currency == "All":
-            return self._get_or_update()
-        rate = self.r.hget("rates", currency)
-        if rate:
-            return {currency: rate}
-        else:
-            self._update_rates()
-            return {currency: self.r.hget("rates", currency)}

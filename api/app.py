@@ -34,8 +34,8 @@ class Conversion(Resource):
 class Lat(Resource):
     @use_kwargs(
         {
-            "base": fields.Str(required=False, missing=None),
-            "rates": fields.DelimitedList(fields.Str(), required=False, missing=None),
+            "base": fields.Str(required=False, missing="All"),
+            "rates": fields.DelimitedList(fields.Str(), required=False, missing=["All"]),
         }
     )
     def get(self, **kwargs):
