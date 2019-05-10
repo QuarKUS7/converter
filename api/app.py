@@ -3,6 +3,8 @@ from flask_restful import Resource, Api
 from convert import Convert
 from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
+from latest import Latest
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,7 +17,7 @@ def handle_error(err):
     return jsonify({"Error": messages}), err.code
 
 
-class Conversion(Resource):
+class Conversion_route(Resource):
     @use_kwargs(
         {
             "input_currency": fields.Str(required=True),
@@ -30,7 +32,22 @@ class Conversion(Resource):
         return cnvrt.convert()
 
 
-api.add_resource(Conversion, "/currency_converter")
+class Latest_route(Resource):
+    @use_kwargs(
+        {
+            "base": fields.Str(required=False, missing="CZK"),
+            "rates": fields.DelimitedList(
+                fields.Str(), required=False, missing=["All"]
+            ),
+        }
+    )
+    def get(self, **kwargs):
+        late = Latest(kwargs["base"], kwargs["rates"])
+        return late.fetch_rates()
+
+
+api.add_resource(Conversion_route, "/currency_converter")
+api.add_resource(Latest_route, "/latest")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
