@@ -1,0 +1,112 @@
+# Every test file has one or more tests...
+test_name: Get latest currencies with base CZK
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure we have the right ID
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/latest
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "CZK", "rates": {"AUD": 0.06238692370079232, "BRL": 0.17247326664367024, "BGN": 0.07603406326034064, "CNY": 0.2968239833778569, "DKK": 0.29027576197387517, "EUR": 0.038880248833592534, "PHP": 2.2733989587832766, "HKD": 0.34153005464480873, "HRK": 0.28801843317972353, "INR": 3.0454379339749056, "IDR": 624.2197253433208, "ISK": 5.33447135388883, "ILS": 0.15540015540015542, "JPY": 4.778515792994696, "ZAR": 0.6238303181534622, "CAD": 0.058668231152830735, "KRW": 51.4668039114771, "HUF": 12.57071024512885, "MYR": 0.18073377914332187, "MXN": 0.8340283569641367, "XDR": 0.031406048804999843, "NOK": 0.38124285169653066, "NZD": 0.06615069127472381, "PLN": 0.1669170422300117, "RON": 0.18515089798185522, "RUB": 2.8402635764598956, "SGD": 0.05934365913002196, "SEK": 0.41981528127623846, "CHF": 0.044281096399946866, "THB": 1.3825521913452234, "TRY": 0.27137042062415195, "USD": 0.04351042074576861, "GBP": 0.0334851326011251, "CZK": 1.0}}
+
+---
+
+test_name: Get latest currencies with different base
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/latest?base=NOK
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "NOK", "rates": {"AUD": 0.16364090086717825, "BRL": 0.4523973784063471, "BGN": 0.1994373479318735, "CNY": 0.7785693084001187, "DKK": 0.7613933236574746, "EUR": 0.10198289269051322, "PHP": 5.963125468888535, "HKD": 0.8958333333333334, "HRK": 0.7554723502304149, "INR": 7.988183700816178, "IDR": 1637.3283395755304, "ISK": 13.992318361250403, "ILS": 0.4076146076146077, "JPY": 12.53404692502509, "ZAR": 1.6363069245165316, "CAD": 0.15388677031387504, "KRW": 134.99742665980443, "HUF": 32.972972972972975, "MYR": 0.47406470269293327, "MXN": 2.187656380316931, "XDR": 0.08237806601551459, "NOK": 1.0, "NZD": 0.17351326321360058, "PLN": 0.4378234017693207, "RON": 0.48565080540640626, "RUB": 7.450011361054306, "SGD": 0.1556584178980476, "SEK": 1.1011754827875735, "CHF": 0.11614931585706063, "THB": 3.6264343978985214, "TRY": 0.7118046132971506, "USD": 0.11412783361615107, "GBP": 0.08783150281275115, "CZK": 2.623}}
+
+---
+
+test_name: Get latest currencies custom list symbols and codes
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/latest?base=NOK&rates=$,EUR
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "NOK", "rates": {"EUR": 0.10198289269051322, "USD": 0.11412783361615107}}
+
+---
+
+test_name: Get unknown base
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/latest?base=NK&rates=$,EUR
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 400
+      body:
+        {"Error": {"base": ["Unknown base currency or symbol."]}}
+
+---
+
+test_name: Get wrong currency in custom list of symbols or codes
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/latest?base=NOK&rates=$,ER
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 400
+      body:
+        {"Error": {"rates": ["Unknown rate currency or symbol."]}}
+
+---
+
+test_name: Get empty custom list
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/latest?base=NOK&rates=
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 400
+      body:
+        {"Error": {"rates": ["Unknown rate currency or symbol."]}}

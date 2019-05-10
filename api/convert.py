@@ -3,6 +3,7 @@ import datetime
 import redis
 import json
 
+
 class Base:
 
     _CNB_URL = "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt"
@@ -11,12 +12,12 @@ class Base:
 
     def __init__(self):
         self._symbol_list = self._load_symbols()
-    
+
     def _load_symbols(self):
         # Load symbol list
         with open("symbols.json", "r", encoding="utf-8") as f:
             symbol_list = json.load(f)
-        return list(symbol_list.values())   
+        return list(symbol_list.values())
 
     def _check_currency_symbol(self, curren):
         """Check if symbol in symbol list. Returns code of the currency"""
@@ -87,10 +88,9 @@ class Base:
         else:
             self._update_rates()
             return {currency: self.r.hget("rates", currency)}
-                
+
 
 class Convert(Base):
-
     def __init__(self, from_curren, amount, to_curren):
         super().__init__()
         self.from_curren = self._check_currency_symbol(from_curren)
@@ -123,7 +123,7 @@ class Convert(Base):
         return out
 
     def _change(self, currency):
-        # Formula for currency chnage
+        # Formula for currency change
         return (
             float(next(iter(self.from_curren.values())))
             * float(self.amount)
