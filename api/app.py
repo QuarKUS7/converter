@@ -34,7 +34,7 @@ class Conversion(Resource):
 class Lat(Resource):
     @use_kwargs(
         {
-            "base": fields.Str(required=False, missing="All"),
+            "base": fields.Str(required=False, missing="CZK"),
             "rates": fields.DelimitedList(fields.Str(), required=False, missing=["All"]),
         }
     )

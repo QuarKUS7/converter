@@ -19,11 +19,9 @@ class Latest(Base):
             )
         rates = self._get_or_update()
         if "All" not in self.custom_list:
-            rates = {key:value for (key, value) in rates.items() if key in self.custom_list}
-        if self.base != "All":
-            return self._rebase(rates)
-        return rates
+            rates = {k:v for (k, v) in rates.items() if k in self.custom_list}
+        return {"base": self.base, "rates":self._rebase(rates)}
 
     def _rebase(self, dict_rates):
         base_rate = next(iter(self._get_rate(self.base).values()))
-        return {key:float(value)/float(base_rate) for key, value in dict_rates.items()}
+        return {k:1 / v * float(base_rate) for k, v in dict_rates.items()}

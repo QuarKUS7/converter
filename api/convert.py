@@ -71,10 +71,10 @@ class Base:
     def _get_or_update(self):
         rates = self.r.hgetall("rates")
         if rates:
-            return rates
+            return dict((k, float(v)) for k, v in rates.items())
         else:
             self._update_rates()
-            return self.r.hgetall("rates")
+            return dict((k, float(v)) for k, v in self.r.hgetall("rates").items())
 
     def _get_rate(self, currency):
         """Return rates from db or trigers update for rates"""
