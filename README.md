@@ -37,8 +37,8 @@ GET http://cnbrates.pgc.sk/latest?base=$
 ```http
 GET http://cnbrates.pgc.sk/latest?base=EUR&rates=Kč,¥,CN¥,£,R,TL,฿,AU$,R$,S$,NZ$,MX$,CA$,HK$,₪,Dkr,kn,Skr,₱,zł,₩,Ft,Rp,Rs,Ikr,RM,Nkr
 ```
-#### Latest rates
-Convert from currency to another.
+#### Currency converter
+Convert from currency to another using CNB rates.
 
 ```http
 GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&output_currency=EUR
