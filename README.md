@@ -46,7 +46,7 @@ GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&outp
 Covnert from one currency to all known currencies.
 
 ```http
-GET http://cnbrates.pgc.sk/currency_converter?amount=99.99
+GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=RUB
 ```
 
 #### Rates history
