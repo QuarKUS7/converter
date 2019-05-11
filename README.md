@@ -84,7 +84,9 @@ Exchange rates API is built upon Flask_RESTful to eforce REST principles. Gunico
 
 
 ## Deployment
-#### Docker-compose
+#### Docker
+Clone this repo and in root directory run docker-compose.
+
 ```shell
 docker-compose up
 ```
