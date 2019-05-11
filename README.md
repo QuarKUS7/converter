@@ -43,6 +43,11 @@ Convert from currency to another using CNB rates.
 ```http
 GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&output_currency=EUR
 ```
+Covnert from one currency to all known currencies.
+
+```http
+GET http://cnbrates.pgc.sk/currency_converter?amount=99.99
+```
 
 #### Rates history
 TBA
