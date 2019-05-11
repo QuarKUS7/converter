@@ -14,28 +14,34 @@ http://cnbrates.pgc.sk/
 Get the latest foreign exchange rates.
 
 ```http
-GET /latest
+GET http://cnbrates.pgc.sk/latest
 ```
 Rates are quoted against the Czech koruna (CZK) by default. For quotation against a different currency, set the base parameter in your request.
 
 ```http
-GET /latest?base=EUR
+GET http://cnbrates.pgc.sk/latest?base=EUR
 ```
 
 Request specific exchange rates by setting the rates parameter.
 
 ```http
-GET /latest?symbols=USD,GBP
+GET http://cnbrates.pgc.sk/latest?symbols=USD,GBP
 ```
 
 API supports currency symbols
 
 ```http
-GET /latest?base=$
+GET http://cnbrates.pgc.sk/latest?base=$
 ```
 
 ```http
-GET /latest?base=€&rates=Kč,¥,CN¥,£,R,TL,฿,AU$,R$,S$,NZ$,MX$,CA$,HK$,₪,Dkr,Skr,₱,zł,₩
+GET http://cnbrates.pgc.sk/latest?base=EUR&rates=Kč,¥,CN¥,£,R,TL,฿,AU$,R$,S$,NZ$,MX$,CA$,HK$,₪,Dkr,kn,Skr,₱,zł,₩,Ft,Rp,Rs,Ikr,RM,Nkr
+```
+#### Latest rates
+Convert from currency to another.
+
+```http
+GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&output_currency=EUR
 ```
 
 #### Rates history
@@ -57,7 +63,7 @@ fetch('http://cnbrates.pgc.sk/latest')
   .then(demo)
 ```
 
-## API wrappers
+## API wrapper
 * TBA
 
 ## Stack
