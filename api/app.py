@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
-from convert import Convert
+from models.convert import Convert
 from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
-from latest import Latest
+from models.latest import Latest
 
 
 app = Flask(__name__)
