@@ -17,7 +17,7 @@ def handle_error(err):
     return jsonify({"Error": messages}), err.code
 
 
-class Conversion_route(Resource):
+class ConversionRoute(Resource):
     @use_kwargs(
         {
             "input_currency": fields.Str(required=True),
@@ -32,7 +32,7 @@ class Conversion_route(Resource):
         return cnvrt.convert()
 
 
-class Latest_route(Resource):
+class LatestRoute(Resource):
     @use_kwargs(
         {
             "base": fields.Str(required=False, missing="CZK"),
@@ -46,8 +46,8 @@ class Latest_route(Resource):
         return late.fetch_rates()
 
 
-api.add_resource(Conversion_route, "/currency_converter")
-api.add_resource(Latest_route, "/latest")
+api.add_resource(ConversionRoute, "/currency_converter")
+api.add_resource(LatestRoute, "/latest")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
