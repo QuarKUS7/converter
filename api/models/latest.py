@@ -6,6 +6,7 @@ class Latest(Base):
         super().__init__()
         self.base = self._check_currency_symbol(base)
         self.custom_list = [self._check_currency_symbol(rate) for rate in rates]
+        self.base_rate = next(iter(self._get_rate(self.base).values()))
 
     def fetch_rates(self):
         if not self.base:
@@ -16,9 +17,9 @@ class Latest(Base):
         if "All" not in self.custom_list:
             # filtering custom rates
             rates = {k: v for (k, v) in rates.items() if k in self.custom_list}
-        return {"base": self.base, "rates": self._rebase(rates)}
+        return {"base": self.base, "rates": self._rebase(rates, self.base_rate)}
 
-    def _rebase(self, dict_rates):
+    def _rebase(self, dict_rates, base_rate):
         """Function for rebasing rates in dict"""
-        base_rate = next(iter(self._get_rate(self.base).values()))
-        return {k: 1 / v * float(base_rate) for k, v in dict_rates.items()}
+        #base_rate = next(iter(self._get_rate(self.base).values()))
+        return {k: 1 / float(v) * float(base_rate) for k, v in dict_rates.items()}
