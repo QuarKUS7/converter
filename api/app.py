@@ -55,7 +55,7 @@ class HistoryRoute(Resource):
         }
     )
     def get(self, **kwargs):
-        hist = History(kwargs["date"])
+        hist = History('CZK', "All", kwargs["date"])
         return hist.fetch_hist_rates()
 
 api.add_resource(ConversionRoute, "/currency_converter")
