@@ -74,7 +74,7 @@ fetch('http://cnbrates.pgc.sk/latest')
 
 ## Stack
 
-Exchange rates API is built upon Flask_RESTful to eforce REST principles. Gunicorn serves as WSGI Server. Nginx is used as a reverse proxy. Redis is used for caching. Everything is dockerized.
+Exchange rates API is built upon Flask_RESTful to enforce REST principles. Gunicorn serves as a WSGI Server. Nginx is used as a reverse proxy. Redis is used for caching. Everything is dockerized.
 
 #### Libraries used
 * [Flask](https://github.com/pallets/flask)
