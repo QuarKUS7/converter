@@ -15,7 +15,7 @@ class Rates(Base):
         if "All" not in self.custom_list:
             # filtering custom rates
             rates = {k: v for (k, v) in rates.items() if k in self.custom_list}
-        return {"base": self.base, "rates": self._rebase(rates, base_rate)}
+        return self._rebase(rates, base_rate)
 
     def _rebase(self, dict_rates, base_rate):
         """Function for rebasing rates in dict"""
