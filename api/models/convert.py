@@ -1,6 +1,7 @@
 from .base import Base
 import datetime
 
+
 class Convert(Base):
     def __init__(self, from_curren, amount, to_curren):
         super().__init__()

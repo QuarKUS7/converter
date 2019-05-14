@@ -59,7 +59,7 @@ class Base:
 
     def _request(self, date):
         """Request txt from CNB"""
-        response = requests.get(self._CNB_URL + f'?date={date}')
+        response = requests.get(self._CNB_URL + f"?date={date}")
         if response.content:
             return response.text
 
@@ -82,4 +82,3 @@ class Base:
         else:
             self._update_rates(date)
             return {currency: self.r.hget(date, currency)}
-
