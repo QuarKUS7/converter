@@ -7,6 +7,7 @@ from models.latest import Rates
 import datetime
 from utils import daterange, format_to_dot_date
 
+
 app = Flask(__name__)
 api = Api(app)
 

@@ -43,7 +43,7 @@ class Base:
     def _parse_cnb(self, text):
         print("parsed")
         """Returns dict of currency and rate from CNB rates"""
-        # Parse date
+        # Parse 10 characters which is the CNB date
         date = text[:10]
         rates_dict = {}
         for row in text.split("\n")[2:-1]:

@@ -20,3 +20,4 @@ class Rates(Base):
     def _rebase(self, dict_rates, base_rate):
         """Function for rebasing rates in dict"""
         return {k: 1 / float(v) * float(base_rate) for k, v in dict_rates.items()}
+        
