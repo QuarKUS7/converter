@@ -43,6 +43,7 @@ class Base:
     def _parse_cnb(self, text):
         print("parsed")
         """Returns dict of currency and rate from CNB rates"""
+        # Parse date
         date = text[:10]
         rates_dict = {}
         for row in text.split("\n")[2:-1]:
@@ -55,14 +56,6 @@ class Base:
 
     def _insert_into_redis(self, to_insert, date):
         self.r.hmset(date, to_insert)
-        # expire at is set for 14:35 next day, after this the rates are updated
-        #self.r.expireat(
-        #    "rates",
-        #    datetime.datetime.combine(
-        #        datetime.date.today() + datetime.timedelta(days=1),
-        #        datetime.time(14, 35),
-        #    ),
-        #)
 
     def _request(self, date):
         """Request txt from CNB"""

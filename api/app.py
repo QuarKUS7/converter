@@ -3,10 +3,9 @@ from flask_restful import Resource, Api
 from models.convert import Convert
 from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
-from models.latest import Latest
-from models.history import History
+from models.latest import Rates
 import datetime
-from utils import daterange
+from utils import daterange, format_to_dot_date
 
 app = Flask(__name__)
 api = Api(app)
@@ -25,13 +24,16 @@ class ConversionRoute(Resource):
             "input_currency": fields.Str(required=True),
             "amount": fields.Float(required=True, validate=lambda val: val > 0),
             "output_currency": fields.Str(required=False, missing="All"),
+            "date": fields.Date(required=False, validate=lambda val: val >= datetime.date(1991, 1, 1), missing = None),
         }
     )
     def get(self, **kwargs):
         cnvrt = Convert(
             kwargs["input_currency"], kwargs["amount"], kwargs["output_currency"]
         )
-        return cnvrt.convert()
+        if kwargs["date"]:
+            return cnvrt.convert(format_to_dot_date(kwargs["date"]))
+        return cnvrt.convert(format_to_dot_date(datetime.datetime.today().strftime('%Y-%m-%d')))
 
 class LatestRoute(Resource):
     @use_kwargs(
@@ -43,8 +45,9 @@ class LatestRoute(Resource):
         }
     )
     def get(self, **kwargs):
-        late = Latest(kwargs["base"], kwargs["rates"])
-        return late.fetch_rates()
+        late = Rates(kwargs["base"], kwargs["rates"])
+        rates = late.fetch_rates(format_to_dot_date(datetime.datetime.today().strftime('%Y-%m-%d')))
+        return {"base": late.base, "rates": rates}
 
 class HistoryRoute(Resource):
     @use_kwargs(
@@ -59,15 +62,15 @@ class HistoryRoute(Resource):
     )
     def get(self, **kwargs):
         if kwargs['date'] and not kwargs['start_date'] and not kwargs['end_date']:
-            singl_hist = History('CZK', "All")
-            return {"base": "CZK", "rates": singl_hist.fetch_hist_rates(kwargs["date"])}
+            singl_hist = Rates('CZK', ["All"])
+            return {"base": "CZK", "rates": singl_hist.fetch_rates(format_to_dot_date(kwargs["date"]))}
 
         elif not kwargs['date'] and kwargs['start_date'] and kwargs['end_date']:
             out = {"base": "CZK", "rates": {}}
-            multi_hist = History('CZK', "All")
+            multi_hist = Rates('CZK', ["All"])
             for dt in daterange(kwargs['start_date'] , kwargs['end_date']):
-                one_day = dt.strftime("%Y-%m-%d")
-                out["rates"][one_day] = multi_hist.fetch_hist_rates(one_day)
+                one_day = format_to_dot_date(dt.strftime("%Y-%m-%d"))
+                out["rates"][one_day] = multi_hist.fetch_rates(one_day)
             return out
         else:
             return ({"Error": {"dates": ["Ivalid input combination"]}}, 400)
