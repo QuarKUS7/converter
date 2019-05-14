@@ -6,7 +6,7 @@ from webargs.flaskparser import parser, abort, use_kwargs
 from models.latest import Latest
 from models.history import History
 import datetime
-
+from utils import daterange
 
 app = Flask(__name__)
 api = Api(app)
@@ -33,7 +33,6 @@ class ConversionRoute(Resource):
         )
         return cnvrt.convert()
 
-
 class LatestRoute(Resource):
     @use_kwargs(
         {
@@ -50,13 +49,29 @@ class LatestRoute(Resource):
 class HistoryRoute(Resource):
     @use_kwargs(
         {
-            "date": fields.Date(required=True, validate=lambda val: val >= datetime.date(1991, 1, 1)
+            "date": fields.Date(required=False, validate=lambda val: val >= datetime.date(1991, 1, 1), missing = None
+            ),
+            "start_date": fields.Date(required=False, validate=lambda val: val >= datetime.date(1991, 1, 1), missing = None
+            ),
+            "end_date": fields.Date(required=False, validate=lambda val: val >= datetime.date(1991, 1, 1), missing = None
             ),
         }
     )
     def get(self, **kwargs):
-        hist = History('CZK', "All", kwargs["date"])
-        return hist.fetch_hist_rates()
+        if kwargs['date'] and not kwargs['start_date'] and not kwargs['end_date']:
+            singl_hist = History('CZK', "All")
+            return {"base": "CZK", "rates": singl_hist.fetch_hist_rates(kwargs["date"])}
+
+        elif not kwargs['date'] and kwargs['start_date'] and kwargs['end_date']:
+            out = {"base": "CZK", "rates": {}}
+            multi_hist = History('CZK', "All")
+            for dt in daterange(kwargs['start_date'] , kwargs['end_date']):
+                one_day = dt.strftime("%Y-%m-%d")
+                out["rates"][one_day] = multi_hist.fetch_hist_rates(one_day)
+            return out
+        else:
+            return ({"Error": {"dates": ["Ivalid input combination"]}}, 400)
+
 
 api.add_resource(ConversionRoute, "/currency_converter")
 api.add_resource(LatestRoute, "/latest")
