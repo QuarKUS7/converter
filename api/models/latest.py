@@ -11,7 +11,7 @@ class Rates(Base):
 
     def fetch_rates(self, date):
         base_rate = next(iter(self._get_rate(self.base, date).values()))
-        rates = self._get_or_update(date)
+        rates = self._get_rate('All', "latest")
         if "All" not in self.custom_list:
             # filtering custom rates
             rates = {k: v for (k, v) in rates.items() if k in self.custom_list}

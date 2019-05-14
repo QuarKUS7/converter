@@ -63,19 +63,16 @@ class Base:
         if response.content:
             return response.text
 
-    def _get_or_update(self, date):
-        rates = self.r.hgetall(date)
-        if rates:
-            return dict((k, float(v)) for k, v in rates.items())
-        else:
-            self._update_rates(date)
-            return dict((k, float(v)) for k, v in self.r.hgetall(date).items())
-
     def _get_rate(self, currency, date):
         """Return rates from db or trigers update for rates"""
         # All is for missing option
         if currency == "All":
-            return self._get_or_update(date)
+            rates = self.r.hgetall(date)
+            if rates:
+                return rates
+            else:
+                self._update_rates(date)
+                return self.r.hgetall(date)
         rate = self.r.hget(date, currency)
         if rate:
             return {currency: rate}
