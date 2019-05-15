@@ -1,0 +1,20 @@
+version: "3"
+services:
+    api:
+      image: quarkus7/cnbapi_api
+      container_name: api
+      depends_on:
+        - redis
+      command: gunicorn --workers=3 --threads=2 --bind 0.0.0.0:5000 app:api.app
+      ports:
+        - "5000:5000"
+    nginx:
+      image: quarkus7/cnbapi_nginx
+      container_name: nginx
+      depends_on:
+        - api
+      restart: always
+      ports:
+        - "80:80"
+    redis:
+      image: "redis:alpine"
