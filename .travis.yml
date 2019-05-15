@@ -4,8 +4,8 @@ services:
   - docker
 
 before_install:
-  - docker build -t quarkus7/cnbapi_nginx .
-  - docker build -t quarkus7/cnbapi_api ./api
+  - docker build -t quarkus7/cnbapi_nginx -f Dockerfile.nginx .
+  - docker build -t quarkus7/cnbapi_api -f Dockerfile.api ./api
 
 script:
   - docker run quarkus7/cnbapi_api python test.py
