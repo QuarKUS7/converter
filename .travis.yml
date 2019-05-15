@@ -10,7 +10,8 @@ before_install:
 #script:
 #  - docker run quarkus7/cnbapi_api python tests/test.py
 
-after_success:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#after_success:
+script:
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker push quarkus7/cnbapi_nginx
   - docker push quarkus7/cnbapi_api
