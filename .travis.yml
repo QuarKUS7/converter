@@ -3,14 +3,14 @@ language: python
 services:
   - docker
 
-  before_install:
+before_install:
   - docker build -t quarkus7/cnbapi_nginx .
   - docker build -t quarkus7/cnbapi_api ./api
 
-  script:
+script:
   - docker run quarkus7/cnbapi_api python test.py
 
-  after_success:
+after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker push quarkus7/cnbapi_nginx
   - docker push quarkus7/cnbapi_api
