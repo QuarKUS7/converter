@@ -7,8 +7,8 @@ before_install:
   - docker build -t quarkus7/cnbapi_nginx -f Dockerfile.nginx .
   - docker build -t quarkus7/cnbapi_api -f api/Dockerfile.api ./api
 
-script:
-  - docker run quarkus7/cnbapi_api python tests/test.py
+#script:
+#  - docker run quarkus7/cnbapi_api python tests/test.py
 
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
