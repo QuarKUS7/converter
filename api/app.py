@@ -3,9 +3,9 @@ from flask_restful import Resource, Api, abort
 from models.convert import Convert
 from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
-from models.latest import Rates
-import datetime
+from models.rates import Rates
 from utils import daterange, format_to_dot_date, cnb_day
+import datetime
 
 
 app = Flask(__name__)
@@ -39,7 +39,7 @@ class ConversionRoute(Resource):
         if kwargs["date"]:
             return cnvrt.convert(format_to_dot_date(kwargs["date"]))
         return cnvrt.convert(
-            format_to_dot_date(datetime.datetime.today().strftime("%Y-%m-%d"))
+            format_to_dot_date(cnb_day())
         )
 
 
@@ -58,9 +58,7 @@ class LatestRoute(Resource):
             return ({"Error": {"base": ["Unknown base currency or symbol."]}}, 400)
         if None in late.custom_list:
             return ({"Error": {"rates": ["Unknown rate currency or symbol."]}}, 400)
-        rates = late.fetch_rates(
-            format_to_dot_date(cnb_day())
-        )
+        rates = late.fetch_rates(format_to_dot_date(cnb_day()))
         return {"base": late.base, "rates": rates}
 
 
