@@ -5,7 +5,7 @@ from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
 from models.latest import Rates
 import datetime
-from utils import daterange, format_to_dot_date
+from utils import daterange, format_to_dot_date, cnb_day
 
 
 app = Flask(__name__)
@@ -59,7 +59,7 @@ class LatestRoute(Resource):
         if None in late.custom_list:
             return ({"Error": {"rates": ["Unknown rate currency or symbol."]}}, 400)
         rates = late.fetch_rates(
-            format_to_dot_date(datetime.datetime.today().strftime("%Y-%m-%d"))
+            format_to_dot_date(cnb_day())
         )
         return {"base": late.base, "rates": rates}
 
