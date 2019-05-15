@@ -3,6 +3,7 @@
 Exchange rates API is a free service for current foreign exchange rates [published by the Czech National Bank](https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/).
 
 [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m779426128-6b6e81ed8dc987db17d4cad2.svg)](https://stats.uptimerobot.com/q20jpuoRv)
+[![Build Status](https://travis-ci.org/QuarKUS7/converter.svg?branch=master)](https://travis-ci.org/QuarKUS7/converter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Usage
