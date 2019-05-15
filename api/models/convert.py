@@ -1,4 +1,5 @@
-from base import Base
+from .base import Base
+import datetime
 
 
 class Convert(Base):
@@ -8,20 +9,20 @@ class Convert(Base):
         self.amount = amount
         self.to_curren = self._check_currency_symbol(to_curren)
 
-    def convert(self):
+    def convert(self, date):
         """Function for tringering conversion on initialized Convert object"""
         if not self.from_curren:
             return (
                 {"Error": {"input_currency": ["Unknown input currency or symbol."]}},
                 400,
             )
-        self.from_curren = self._get_rate(self.from_curren)
+        self.from_curren = self._get_rate(self.from_curren, date)
         if not self.to_curren:
             return (
                 {"Error": {"output_currency": ["Unknown output currency or symbol."]}},
                 400,
             )
-        self.to_curren = self._get_rate(self.to_curren)
+        self.to_curren = self._get_rate(self.to_curren, date)
         out = {
             "input": {
                 "amount": self.amount,
@@ -30,6 +31,8 @@ class Convert(Base):
             "output": {},
         }
         for key, value in self.to_curren.items():
+            if not value:
+                continue
             out["output"][key] = self._change(float(value))
         return out
 

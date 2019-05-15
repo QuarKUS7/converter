@@ -34,15 +34,17 @@ class Base:
             None,
         )
 
-    def _update_rates(self):
+    def _update_rates(self, date):
         """Parse and insert new rates to db"""
-        resp = self._request()
-        rates_dict = self._parse_cnb(resp)
-        self._insert_into_redis(rates_dict)
+        resp = self._request(date)
+        rates_dict, date = self._parse_cnb(resp)
+        self._insert_into_redis(rates_dict, date)
 
     def _parse_cnb(self, text):
         print("parsed")
         """Returns dict of currency and rate from CNB rates"""
+        # Parse 10 characters which is the CNB date
+        date = text[:10]
         rates_dict = {}
         for row in text.split("\n")[2:-1]:
             rates_dict[row.split("|")[-2]] = float(
@@ -50,42 +52,30 @@ class Base:
             ) / float(row.split("|")[-3].replace(",", "."))
         # CZK not in the list so added manually
         rates_dict["CZK"] = "1"
-        return rates_dict
+        return rates_dict, date
 
-    def _insert_into_redis(self, to_insert):
-        self.r.hmset("rates", to_insert)
-        # expire at is set for 14:35 next day, after this the rates are updated
-        self.r.expireat(
-            "rates",
-            datetime.datetime.combine(
-                datetime.date.today() + datetime.timedelta(days=1),
-                datetime.time(14, 35),
-            ),
-        )
+    def _insert_into_redis(self, to_insert, date):
+        self.r.hmset(date, to_insert)
 
-    def _request(self):
+    def _request(self, date):
         """Request txt from CNB"""
-        response = requests.get(self._CNB_URL)
+        response = requests.get(self._CNB_URL + f"?date={date}")
         if response.content:
             return response.text
 
-    def _get_or_update(self):
-        rates = self.r.hgetall("rates")
-        if rates:
-            return dict((k, float(v)) for k, v in rates.items())
-        else:
-            self._update_rates()
-            return dict((k, float(v)) for k, v in self.r.hgetall("rates").items())
-
-    def _get_rate(self, currency):
+    def _get_rate(self, currency, date):
         """Return rates from db or trigers update for rates"""
         # All is for missing option
         if currency == "All":
-            return self._get_or_update()
-        rate = self.r.hget("rates", currency)
+            rates = self.r.hgetall(date)
+            if rates:
+                return rates
+            else:
+                self._update_rates(date)
+                return self.r.hgetall(date)
+        rate = self.r.hget(date, currency)
         if rate:
             return {currency: rate}
         else:
-            self._update_rates()
-            return {currency: self.r.hget("rates", currency)}
-
+            self._update_rates(date)
+            return {currency: self.r.hget(date, currency)}

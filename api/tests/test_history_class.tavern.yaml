@@ -1,0 +1,76 @@
+# Every test file has one or more tests...
+test_name: Get first day in history
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure we have the right ID
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/history?date=1999-01-01
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "CZK", "rates": {"base": "CZK", "rates": {"AUD": 0.054033608904738746, "DKK": 0.21159542953872196, "EUR": 0.02838812240958383, "JPY": 3.770739064856712, "CAD": 0.051318895617366314, "HUF": 7.196833393306945, "XDR": 0.02356489772834386, "NOK": 0.25220680958385877, "NZD": 0.06291682395872657, "PLN": 0.11619800139437601, "GRD": 9.358038555118847, "SKK": 1.2207627325553005, "SIT": 5.343878587078501, "SEK": 0.2693965517241379, "CHF": 0.0457205559619605, "USD": 0.03314990386527879, "GBP": 0.01999640064788338, "CZK": 1.0}}}
+
+---
+
+# Every test file has one or more tests...
+test_name: Get future day
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/history?date=2020-01-01
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "CZK", "rates": {"base": "CZK", "rates": {}}}
+
+---
+
+test_name: Get history daterange
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/history?start_date=2018-09-08&end_date=2018-09-11
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "CZK", "rates": {"08.09.2018": {"base": "CZK", "rates": {}}, "09.09.2018": {"base": "CZK", "rates": {}}, "10.09.2018": {"base": "CZK", "rates": {"AUD": 0.0633834062242505, "BRL": 0.18368846436443792, "BGN": 0.07627183281214248, "CNY": 0.30959752321981426, "DKK": 0.29078220412910727, "EUR": 0.038986354775828465, "PHP": 2.4328532502919424, "HKD": 0.3541076487252125, "HRK": 0.28935185185185186, "INR": 3.2688284518828454, "IDR": 670.2412868632707, "ISK": 5.048720149442117, "ILS": 0.16178611875101115, "JPY": 5.012028869286286, "ZAR": 0.6844626967830253, "KRW": 50.94243504839531, "CAD": 0.05951672419950006, "HUF": 12.67427122940431, "MYR": 0.1869857890800299, "MXN": 0.8703220191470844, "XDR": 0.03222583867745158, "NOK": 0.37821482602118, "NZD": 0.0690274038793401, "PLN": 0.1682935038707506, "RON": 0.18050541516245489, "RUB": 3.168467412312664, "SGD": 0.062250996015936255, "SEK": 0.4081632653061224, "CHF": 0.043929010718678614, "THB": 1.4824697946779335, "TRY": 0.29154518950437314, "USD": 0.045114138771090856, "GBP": 0.03484441966619046, "CZK": 1.0}}, "11.09.2018": {"base": "CZK", "rates": {"AUD": 0.0635970490969219, "BRL": 0.187125748502994, "BGN": 0.07626019980172348, "CNY": 0.3098853424233034, "DKK": 0.29086678301337987, "EUR": 0.038986354775828465, "PHP": 2.437003460544914, "HKD": 0.35423308537017356, "HRK": 0.2892681515765114, "INR": 3.279333639404473, "IDR": 670.690811535882, "ISK": 5.126627704296114, "ILS": 0.16170763260025872, "JPY": 5.023358617571708, "ZAR": 0.6811989100817439, "KRW": 50.91649694501018, "CAD": 0.059393003504187206, "HUF": 12.661433274246646, "MYR": 0.1870907390084191, "MXN": 0.8710801393728224, "XDR": 0.032317486992211486, "NOK": 0.37735849056603776, "NZD": 0.0692952671332548, "PLN": 0.16801075268817203, "RON": 0.18060321473722232, "RUB": 3.167463811725951, "SGD": 0.062173588659537427, "SEK": 0.4088307440719542, "CHF": 0.04395604395604396, "THB": 1.4819644921307686, "TRY": 0.2923121894182988, "USD": 0.04513246378119781, "GBP": 0.034611657206147034, "CZK": 1.0}}}}
+---
+
+test_name: Get history daterange exchanged start and end date
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: Make sure
+
+    # Define the request to be made...
+    request:
+      url: http://localhost/history?start_date=2018-09-08&end_date=2017-09-11
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        {"base": "CZK", "rates": {}}
+
+---
