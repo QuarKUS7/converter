@@ -23,13 +23,11 @@ Rates are quoted against the Czech koruna (CZK) by default. For quotation agains
 ```http
 GET http://cnbrates.pgc.sk/latest?base=EUR
 ```
-
 Request specific exchange rates by setting the rates parameter.
 
 ```http
 GET http://cnbrates.pgc.sk/latest?symbols=USD,GBP
 ```
-
 API supports currency symbols
 
 ```http
@@ -50,9 +48,24 @@ Covnert from one currency to all known currencies.
 ```http
 GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=RUB
 ```
+Convert from currency to another using CNB rates, but using historical rates.
+
+```http
+GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&output_currency=EUR&date=2018-12-31
+```
 
 #### Rates history
-TBA
+Get historical rates from custom date since 1991-01-01.
+
+```http
+GET http://cnbrates.pgc.sk/history?date=1991-01-01
+```
+
+Get historical rates from range of dates.
+
+```http
+GET cnbrates.pgc.sk/history?start_date=1991-01-01&end_date=1991-02-01
+```
 
 #### Client side usage
 
@@ -96,7 +109,7 @@ docker-compose up
 ## Contributing
 Thanks for your interest in the project! All pull requests are welcome from developers of all skill levels. To get started, simply fork the master branch on GitHub to your personal account and then clone the fork into your development environment.
 
-Peter Pagáč (quarkus7 on Github) is the original creator of the CNB Exchange Rates API framework.
+Peter Pagáč (quarkus7 on Github) is the creator of the CNB Exchange Rates API framework.
 
 ## License
 MIT
