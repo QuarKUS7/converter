@@ -109,7 +109,7 @@ docker-compose up
 ## Contributing
 Thanks for your interest in the project! All pull requests are welcome from developers of all skill levels. To get started, simply fork the master branch on GitHub to your personal account and then clone the fork into your development environment.
 
-Peter Pagáč (quarkus7 on Github) is the creator of the CNB Exchange Rates API framework.
+Peter Pagáč (quarkus7 on Github) is the creator.
 
 ## License
 MIT
