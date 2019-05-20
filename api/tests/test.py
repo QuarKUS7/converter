@@ -8,8 +8,9 @@ class TestPost(unittest.TestCase):
 
         self.test_app = api.test_client()
 
-        response = self.test_api.get('/latest', content_type='html/text')
+        response = self.test_api.get("/latest", content_type="html/text")
         self.assertEqual(response.status_code, 200)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

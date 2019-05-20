@@ -37,10 +37,8 @@ class ConversionRoute(Resource):
             kwargs["input_currency"], kwargs["amount"], kwargs["output_currency"]
         )
         if kwargs["date"]:
-            return cnvrt.convert(format_to_dot_date(kwargs["date"]))
-        return cnvrt.convert(
-            format_to_dot_date(cnb_day())
-        )
+            return cnvrt.convert(format_to_dot_date(cnb_day(kwargs["date"])))
+        return cnvrt.convert(format_to_dot_date(cnb_day()))
 
 
 class LatestRoute(Resource):
@@ -87,14 +85,16 @@ class HistoryRoute(Resource):
             singl_hist = Rates("CZK", ["All"])
             return {
                 "base": "CZK",
-                "rates": singl_hist.fetch_rates(format_to_dot_date(kwargs["date"])),
+                "rates": singl_hist.fetch_rates(
+                    format_to_dot_date(cnb_day(kwargs["date"]))
+                ),
             }
 
         elif not kwargs["date"] and kwargs["start_date"] and kwargs["end_date"]:
             out = {"base": "CZK", "rates": {}}
             multi_hist = Rates("CZK", ["All"])
             for dt in daterange(kwargs["start_date"], kwargs["end_date"]):
-                one_day = format_to_dot_date(dt.strftime("%Y-%m-%d"))
+                one_day = format_to_dot_date(cnb_day(dt))
                 out["rates"][one_day] = multi_hist.fetch_rates(one_day)
             return out
         else:
