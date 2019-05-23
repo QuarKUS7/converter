@@ -11,6 +11,11 @@ import datetime
 app = Flask(__name__)
 api = Api(app)
 
+settings = app.config.get('RESTFUL_JSON', {})
+settings.setdefault('indent', 2)
+settings.setdefault('sort_keys', True)
+app.config['RESTFUL_JSON'] = settings
+
 # Return validation errors as JSON for 422 and 400
 @app.errorhandler(422)
 @app.errorhandler(400)
