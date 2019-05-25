@@ -39,6 +39,7 @@ class Base:
         resp = self._request(date)
         rates_dict, date = self._parse_cnb(resp)
         self._insert_into_redis(rates_dict, date)
+        return date
 
     def _parse_cnb(self, text):
         print("parsed")
@@ -69,13 +70,13 @@ class Base:
         if currency == "All":
             rates = self.r.hgetall(date)
             if rates:
-                return rates
+                return rates, date
             else:
-                self._update_rates(date)
-                return self.r.hgetall(date)
+                date = self._update_rates(date)
+                return self.r.hgetall(date), date
         rate = self.r.hget(date, currency)
         if rate:
-            return {currency: rate}
+            return {currency: rate}, date
         else:
-            self._update_rates(date)
-            return {currency: self.r.hget(date, currency)}
+            date = self._update_rates(date)
+            return {currency: self.r.hget(date, currency)} , date 

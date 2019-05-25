@@ -17,13 +17,13 @@ class Convert(Base):
                 {"Error": {"input_currency": ["Unknown input currency or symbol."]}},
                 400,
             )
-        self.from_curren = self._get_rate(self.from_curren, date)
+        self.from_curren, _ = self._get_rate(self.from_curren, date)
         if not self.to_curren:
             return (
                 {"Error": {"output_currency": ["Unknown output currency or symbol."]}},
                 400,
             )
-        self.to_curren = self._get_rate(self.to_curren, date)
+        self.to_curren, date = self._get_rate(self.to_curren, date)
         out = {
             "input": {
                 "amount": self.amount,

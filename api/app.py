@@ -62,7 +62,7 @@ class LatestRoute(Resource):
         if None in late.custom_list:
             return ({"Error": {"rates": ["Unknown rate currency or symbol."]}}, 400)
         date = format_to_dot_date(cnb_day())
-        rates = late.fetch_rates(date)
+        rates, date = late.fetch_rates(date)
         return {"base": late.base, "rates": {format_from_dot_date(date): rates}}
 
 
@@ -90,9 +90,10 @@ class HistoryRoute(Resource):
         if kwargs["date"] and not kwargs["start_date"] and not kwargs["end_date"]:
             singl_hist = Rates("CZK", ["All"])
             date = format_to_dot_date(cnb_day(kwargs["date"]))
+            rates, date = singl_hist.fetch_rates(date)
             return {
                 "base": "CZK",
-                "rates": {kwargs['date'].strftime('%Y-%m-%d'): singl_hist.fetch_rates(date)
+                "rates": {kwargs['date'].strftime('%Y-%m-%d'): {format_from_dot_date(date): rates}
                 },
             }
 
@@ -101,7 +102,8 @@ class HistoryRoute(Resource):
             multi_hist = Rates("CZK", ["All"])
             for dt in daterange(kwargs["start_date"], kwargs["end_date"]):
                 one_day = format_to_dot_date(cnb_day(dt))
-                out["rates"][dt.strftime('%Y-%m-%d')] = multi_hist.fetch_rates(one_day)
+                rates, date = multi_hist.fetch_rates(one_day)
+                out["rates"][format_from_dot_date(date)] = {dt.strftime('%Y-%m-%d'): rates}
             return out
         else:
             return ({"Error": {"dates": ["Ivalid input combination"]}}, 400)
