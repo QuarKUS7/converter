@@ -4,7 +4,7 @@ from models.convert import Convert
 from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
 from models.rates import Rates
-from utils import daterange, format_to_dot_date, cnb_day
+from utils import daterange, format_to_dot_date, cnb_day, format_from_dot_date
 import datetime
 
 
@@ -61,8 +61,9 @@ class LatestRoute(Resource):
             return ({"Error": {"base": ["Unknown base currency or symbol."]}}, 400)
         if None in late.custom_list:
             return ({"Error": {"rates": ["Unknown rate currency or symbol."]}}, 400)
-        rates = late.fetch_rates(format_to_dot_date(cnb_day()))
-        return {"base": late.base, "rates": rates}
+        date = format_to_dot_date(cnb_day())
+        rates = late.fetch_rates(date)
+        return {"base": late.base, "rates": {format_from_dot_date(date): rates}}
 
 
 class HistoryRoute(Resource):
@@ -88,11 +89,11 @@ class HistoryRoute(Resource):
     def get(self, **kwargs):
         if kwargs["date"] and not kwargs["start_date"] and not kwargs["end_date"]:
             singl_hist = Rates("CZK", ["All"])
+            date = format_to_dot_date(cnb_day(kwargs["date"]))
             return {
                 "base": "CZK",
-                "rates": singl_hist.fetch_rates(
-                    format_to_dot_date(cnb_day(kwargs["date"]))
-                ),
+                "rates": {kwargs['date'].strftime('%Y-%m-%d'): singl_hist.fetch_rates(date)
+                },
             }
 
         elif not kwargs["date"] and kwargs["start_date"] and kwargs["end_date"]:
@@ -100,7 +101,7 @@ class HistoryRoute(Resource):
             multi_hist = Rates("CZK", ["All"])
             for dt in daterange(kwargs["start_date"], kwargs["end_date"]):
                 one_day = format_to_dot_date(cnb_day(dt))
-                out["rates"][one_day] = multi_hist.fetch_rates(one_day)
+                out["rates"][dt.strftime('%Y-%m-%d')] = multi_hist.fetch_rates(one_day)
             return out
         else:
             return ({"Error": {"dates": ["Ivalid input combination"]}}, 400)

@@ -1,5 +1,6 @@
 from .base import Base
 import datetime
+from utils import format_from_dot_date
 
 
 class Convert(Base):
@@ -29,6 +30,7 @@ class Convert(Base):
                 "currency": next(iter(self.from_curren.keys())),
             },
             "output": {},
+            "date": format_from_dot_date(date)
         }
         for key, value in self.to_curren.items():
             if not value:
