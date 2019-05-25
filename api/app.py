@@ -32,7 +32,7 @@ class ConversionRoute(Resource):
             "output_currency": fields.Str(required=False, missing="All"),
             "date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val > datetime.date(1991, 1, 1),
                 missing=None,
             ),
         }
@@ -41,10 +41,7 @@ class ConversionRoute(Resource):
         cnvrt = Convert(
             kwargs["input_currency"], kwargs["amount"], kwargs["output_currency"]
         )
-        if kwargs["date"]:
-            return cnvrt.convert(format_to_dot_date(cnb_day(kwargs["date"])))
-        return cnvrt.convert(format_to_dot_date(cnb_day()))
-
+        return cnvrt.convert(kwargs["date"])
 
 class LatestRoute(Resource):
     @use_kwargs(
@@ -71,17 +68,17 @@ class HistoryRoute(Resource):
         {
             "date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val >= datetime.date(1991, 1, 1),
                 missing=None,
             ),
             "start_date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val >= datetime.date(1991, 1, 1),
                 missing=None,
             ),
             "end_date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val >= datetime.date(1991, 1, 1),
                 missing=None,
             ),
         }
@@ -103,7 +100,7 @@ class HistoryRoute(Resource):
             for dt in daterange(kwargs["start_date"], kwargs["end_date"]):
                 one_day = format_to_dot_date(cnb_day(dt))
                 rates, date = multi_hist.fetch_rates(one_day)
-                out["rates"][format_from_dot_date(date)] = {dt.strftime('%Y-%m-%d'): rates}
+                out["rates"][dt.strftime('%Y-%m-%d')] = {format_from_dot_date(date): rates}
             return out
         else:
             return ({"Error": {"dates": ["Ivalid input combination"]}}, 400)

@@ -10,7 +10,7 @@ def format_to_dot_date(date):
     return f"{dd}.{mm}.{yyyy}"
 
 def format_from_dot_date(date):
-    yyyy, mm, dd = date.split(".")
+    dd, mm, yyyy = date.split(".")
     return f"{yyyy}-{mm}-{dd}"
 
 def prg_now():

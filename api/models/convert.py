@@ -1,6 +1,6 @@
 from .base import Base
 import datetime
-from utils import format_from_dot_date
+from utils import format_from_dot_date, format_to_dot_date, cnb_day
 
 
 class Convert(Base):
@@ -12,6 +12,12 @@ class Convert(Base):
 
     def convert(self, date):
         """Function for tringering conversion on initialized Convert object"""
+        if not date:
+            date = format_to_dot_date(cnb_day())
+            input_date = date
+        elif date:
+            input_date = format_to_dot_date(date)
+            date = format_to_dot_date(cnb_day(date))
         if not self.from_curren:
             return (
                 {"Error": {"input_currency": ["Unknown input currency or symbol."]}},
@@ -26,11 +32,12 @@ class Convert(Base):
         self.to_curren, date = self._get_rate(self.to_curren, date)
         out = {
             "input": {
+                "date": format_from_dot_date(input_date),
                 "amount": self.amount,
-                "currency": next(iter(self.from_curren.keys())),
+                "currency": next(iter(self.from_curren.keys()))
             },
-            "output": {},
-            "date": format_from_dot_date(date)
+            "output": {"effective date": format_from_dot_date(date)},
+
         }
         for key, value in self.to_curren.items():
             if not value:
