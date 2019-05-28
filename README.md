@@ -12,6 +12,8 @@ Exchange rates API is a free service for current foreign exchange rates [publish
 
 http://cnbrates.pgc.sk/
 
+Rates are not published during weekends and public holidays. Latest rates during weekend are considered rates from last Friday. For public holidays rates from last work day are the latest. This also applies to history rates.
+
 #### Latest rates
 Get the latest foreign exchange rates.
 
@@ -66,6 +68,8 @@ Get historical rates from range of dates.
 ```http
 GET cnbrates.pgc.sk/history?start_date=1991-01-01&end_date=1991-02-01
 ```
+
+ For history rates currency symbols are not supported. All rates are CZK based.
 
 #### Client side usage
 
