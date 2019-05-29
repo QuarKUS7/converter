@@ -11,12 +11,13 @@ import datetime
 app = Flask(__name__)
 api = Api(app)
 
+# App settings for indention, sorting and json format
 settings = app.config.get('RESTFUL_JSON', {})
 settings.setdefault('indent', 2)
 settings.setdefault('sort_keys', True)
 app.config['RESTFUL_JSON'] = settings
 
-# Return validation errors as JSON for 422 and 400
+# Return validation errors as JSON as Flask returns text by default
 @app.errorhandler(422)
 @app.errorhandler(400)
 def handle_error(err):
@@ -84,6 +85,7 @@ class HistoryRoute(Resource):
         }
     )
     def get(self, **kwargs):
+        
         if kwargs["date"] and not kwargs["start_date"] and not kwargs["end_date"]:
             singl_hist = Rates("CZK", ["All"])
             date = format_to_dot_date(cnb_day(kwargs["date"]))

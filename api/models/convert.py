@@ -14,8 +14,10 @@ class Convert(Base):
         """Function for tringering conversion on initialized Convert object"""
         if not date:
             date = format_to_dot_date(cnb_day())
+            # Store input date
             input_date = date
         elif date:
+            # Store input date
             input_date = format_to_dot_date(date)
             date = format_to_dot_date(cnb_day(date))
         if not self.from_curren:
