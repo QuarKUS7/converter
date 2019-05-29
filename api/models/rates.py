@@ -10,12 +10,13 @@ class Rates(Base):
         self.custom_list = [self._check_currency_symbol(rate) for rate in rates]
 
     def fetch_rates(self, date):
-        base_rate = next(iter(self._get_rate(self.base, date).values()))
-        rates = self._get_rate("All", date)
+        rates, _ = self._get_rate(self.base, date)
+        base_rate = next(iter(rates.values()))
+        rates, date = self._get_rate("All", date)
         if "All" not in self.custom_list:
             # filtering custom rates
             rates = {k: v for (k, v) in rates.items() if k in self.custom_list}
-        return self._rebase(rates, base_rate)
+        return self._rebase(rates, base_rate), date
 
     def _rebase(self, dict_rates, base_rate):
         """Function for rebasing rates in dict"""

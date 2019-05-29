@@ -4,7 +4,7 @@ from models.convert import Convert
 from webargs import fields, missing
 from webargs.flaskparser import parser, abort, use_kwargs
 from models.rates import Rates
-from utils import daterange, format_to_dot_date, cnb_day
+from utils import daterange, format_to_dot_date, cnb_day, format_from_dot_date
 import datetime
 
 
@@ -32,7 +32,7 @@ class ConversionRoute(Resource):
             "output_currency": fields.Str(required=False, missing="All"),
             "date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val > datetime.date(1991, 1, 1),
                 missing=None,
             ),
         }
@@ -41,10 +41,7 @@ class ConversionRoute(Resource):
         cnvrt = Convert(
             kwargs["input_currency"], kwargs["amount"], kwargs["output_currency"]
         )
-        if kwargs["date"]:
-            return cnvrt.convert(format_to_dot_date(cnb_day(kwargs["date"])))
-        return cnvrt.convert(format_to_dot_date(cnb_day()))
-
+        return cnvrt.convert(kwargs["date"])
 
 class LatestRoute(Resource):
     @use_kwargs(
@@ -61,8 +58,9 @@ class LatestRoute(Resource):
             return ({"Error": {"base": ["Unknown base currency or symbol."]}}, 400)
         if None in late.custom_list:
             return ({"Error": {"rates": ["Unknown rate currency or symbol."]}}, 400)
-        rates = late.fetch_rates(format_to_dot_date(cnb_day()))
-        return {"base": late.base, "rates": rates}
+        date = format_to_dot_date(cnb_day())
+        rates, date = late.fetch_rates(date)
+        return {"base": late.base, "rates": {format_from_dot_date(date): rates}}
 
 
 class HistoryRoute(Resource):
@@ -70,17 +68,17 @@ class HistoryRoute(Resource):
         {
             "date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val >= datetime.date(1991, 1, 1),
                 missing=None,
             ),
             "start_date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val >= datetime.date(1991, 1, 1),
                 missing=None,
             ),
             "end_date": fields.Date(
                 required=False,
-                validate=lambda val: val >= datetime.date(1991, 1, 1),
+                validate=lambda val: datetime.date.today() >= val >= datetime.date(1991, 1, 1),
                 missing=None,
             ),
         }
@@ -88,11 +86,12 @@ class HistoryRoute(Resource):
     def get(self, **kwargs):
         if kwargs["date"] and not kwargs["start_date"] and not kwargs["end_date"]:
             singl_hist = Rates("CZK", ["All"])
+            date = format_to_dot_date(cnb_day(kwargs["date"]))
+            rates, date = singl_hist.fetch_rates(date)
             return {
                 "base": "CZK",
-                "rates": singl_hist.fetch_rates(
-                    format_to_dot_date(cnb_day(kwargs["date"]))
-                ),
+                "rates": {kwargs['date'].strftime('%Y-%m-%d'): {format_from_dot_date(date): rates}
+                },
             }
 
         elif not kwargs["date"] and kwargs["start_date"] and kwargs["end_date"]:
@@ -100,7 +99,8 @@ class HistoryRoute(Resource):
             multi_hist = Rates("CZK", ["All"])
             for dt in daterange(kwargs["start_date"], kwargs["end_date"]):
                 one_day = format_to_dot_date(cnb_day(dt))
-                out["rates"][one_day] = multi_hist.fetch_rates(one_day)
+                rates, date = multi_hist.fetch_rates(one_day)
+                out["rates"][dt.strftime('%Y-%m-%d')] = {format_from_dot_date(date): rates}
             return out
         else:
             return ({"Error": {"dates": ["Ivalid input combination"]}}, 400)
