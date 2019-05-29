@@ -57,16 +57,16 @@ GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&outp
 ```
 
 #### Rates history
-Get historical rates from custom date since 1991-01-01.
+Get historical rates from custom date since 1991-01-02.
 
 ```http
-GET http://cnbrates.pgc.sk/history?date=1991-01-01
+GET http://cnbrates.pgc.sk/history?date=1991-01-02
 ```
 
 Get historical rates from range of dates.
 
 ```http
-GET cnbrates.pgc.sk/history?start_date=1991-01-01&end_date=1991-02-01
+GET cnbrates.pgc.sk/history?start_date=1991-01-02&end_date=1991-02-01
 ```
 
  For history rates currency symbols are not supported. All rates are CZK based.
