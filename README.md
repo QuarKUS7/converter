@@ -28,7 +28,7 @@ GET http://cnbrates.pgc.sk/latest?base=EUR
 Request specific exchange rates by setting the rates parameter.
 
 ```http
-GET http://cnbrates.pgc.sk/latest?symbols=USD,GBP
+GET http://cnbrates.pgc.sk/latest?rates=USD,GBP
 ```
 API supports currency symbols
 
