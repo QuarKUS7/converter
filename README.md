@@ -8,6 +8,8 @@ Exchange rates API is a free service for current foreign exchange rates [publish
 
 ## Usage
 
+# THE API IS CURRENTLY UNAVAILABLE!!
+
 ### API Endpoint
 
 http://cnbrates.pgc.sk/
@@ -40,7 +42,7 @@ GET http://cnbrates.pgc.sk/latest?base=$
 GET http://cnbrates.pgc.sk/latest?base=EUR&rates=Kč,¥,CN¥,£,R,TL,฿,AU$,R$,S$,NZ$,MX$,CA$,HK$,₪,Dkr,kn,Skr,₱,zł,₩,Ft,Rp,Rs,Ikr,RM,Nkr
 ```
 #### Currency converter
-Convert from currency to another using CNB rates.
+Convert from currency to another using CNB rates. 
 
 ```http
 GET http://cnbrates.pgc.sk/currency_converter?amount=99.99&input_currency=$&output_currency=EUR
